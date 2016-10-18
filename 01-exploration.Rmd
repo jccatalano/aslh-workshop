@@ -1,0 +1,157 @@
+---
+title: "Exploring Borrowings in the Field Code"
+output: html_notebook
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(stringr)
+library(textreuse)
+source("helpers.R")
+```
+
+Get just the first few sections of each code.
+
+```{r, message=FALSE}
+files_ny <- list.files("data", pattern = "NY1850-006[01]\\d0\\.txt",
+                       full.names = TRUE)
+files_ca <- list.files("data", pattern = "CA1851-000[01]\\d0\\.txt",
+                       full.names = TRUE)
+files <- c(files_ny, files_ca)
+
+corpus_small <- TextReuseCorpus(paths = files,
+                                tokenizer = tokenizers::tokenize_ngrams,
+                                n = 5, simplify = TRUE,
+                                keep_tokens = TRUE,
+                                progress = FALSE)
+corpus_small
+```
+
+We are going to investigate what a few of the documents look like.
+
+```{r}
+ny1 <- corpus_small[["NY1850-006060"]]
+ny1
+
+ny2 <- corpus_small[["NY1850-006070"]]
+ny2
+
+ca1 <- corpus_small[["CA1851-000030"]]
+ca1
+
+ca2 <- corpus_small[["CA1851-000040"]]
+ca2
+```
+
+We can compute the similarity between these different documents.
+
+```{r}
+cat("These should be similar:\n")
+jaccard_similarity(ca1, ny1)
+jaccard_similarity(ca2, ny2)
+
+cat("\nThese should be different:\n")
+jaccard_similarity(ca1, ny2)
+jaccard_similarity(ca2, ny1)
+```
+
+How does this work? It works because we have split the texts into tokens, called n-grams.
+
+```{r}
+cat("\nTokens from NY2:\n")
+tokens(ny2)
+
+cat("\nTokens from CA2:\n")
+tokens(ca2)
+```
+
+Which tokens are in both documents?
+
+```{r}
+intersect(tokens(ny2), tokens(ca2))
+```
+
+So we have proven to ourselves that it is possible to correctly measure sections that match and sections that don't match. So all we have to do now is compare each section to every other section.
+
+```{r}
+sim <- pairwise_compare(corpus_small, jaccard_similarity, progress = FALSE)
+
+interesting_sections <- c("NY1850-006060", "NY1850-006070",
+                          "CA1851-000030", "CA1851-000040")
+sim[interesting_sections, interesting_sections]
+```
+
+A cleaner look at the similarity matrix, if you like:
+
+```{r, eval=FALSE}
+sim2 <- sim
+sim2[sim2 == 0] <- NA
+sim2 <- round(sim2, 2)
+View(sim2)
+```
+
+Or we can see pairwise comparisons in a table.
+
+```{r}
+pairwise_candidates(sim) %>% 
+  filter(score > 0,
+         get_state(a) != get_state(b)) %>%
+  group_by(a) %>% 
+  top_n(1, score)
+```
+
+### Exercise
+
+Given the table above, are these genuine matches? Change the ID below to see the text in each of these files.
+
+```{r}
+content(corpus_small[["CA1851-000020"]])
+```
+
+## Minhash/LSH
+
+```{r, warning = FALSE}
+minhash <- minhash_generator(n = 120, seed = 2853)
+lsh_threshold(h = 120, b = 60)
+
+corpus <- TextReuseCorpus(dir = "data",
+                          tokenizer = tokenizers::tokenize_ngrams,
+                          n = 5, simplify = TRUE,
+                          minhash_func = minhash,
+                          progress = FALSE)
+```
+
+```{r}
+candidates <- corpus %>% 
+  lsh(bands = 60) %>% 
+  lsh_candidates()
+```
+
+```{r}
+similarities <- lsh_compare(candidates, corpus, jaccard_similarity)
+```
+
+```{r}
+THRESHOLD <- 0.1
+best_sim <- similarities %>% 
+  filter(score >= THRESHOLD,
+       get_state(a) != get_state(b)) %>%
+  group_by(a) %>% 
+  top_n(1, score) 
+
+CA1851 <- data_frame(a = str_subset(names(corpus), "CA1851")) %>% 
+  left_join(best_sim, by = "a")
+```
+
+## Alignment
+
+```{r}
+check_match(best_sim, 1, corpus)
+```
+
+## Spectrogram
+
+```{r}
+spectrogram("CA1851", CA1851)
+```
+
