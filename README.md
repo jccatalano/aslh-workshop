@@ -1,0 +1,1 @@
+These materials are for a workshop on text reuse in digital legal history taught by Kellen Funk and Lincoln Mullen at the annual meeting of the American Society for Legal History, Toronto, October 27, 2016.
