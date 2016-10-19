@@ -17,6 +17,8 @@ If you prefer you can follow along on these pages (which are not interactive).
 - [Basics of text reuse for digital legal history](01-exploration.nb.html)
 - [Exploring borrowings in the Field Codes](02-exploration.nb.html)
 
+These workshop materials are available in a [GitHub repository](https://github.com/lmullen/aslh-workshop/) or as a [direct download](https://github.com/lmullen/aslh-workshop/archive/master.zip).
+
 ## Additional materials
 
 You may find our [working paper](http://lmullen.github.io/civil-procedure-codes/talks/dh-working-group/Funk-Mullen.Migration-Field-Code.working-paper.pdf) (PDF) or the [other materials](http://lmullen.github.io/civil-procedure-codes/) we have assembled as part of our work on the Field Code.
