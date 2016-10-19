@@ -1,0 +1,24 @@
+---
+title: "ASLH Workshop on Text Reuse for Digital Legal History"
+author: "Kellen Funk and Lincoln Mullen"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Workshop materials
+
+You will receive credential to log in to the RStudio Server running at RRCHNM. You can log in here: [http://rstudio.chnm.org/](http://rstudio.chnm.org/)
+
+If you prefer you can follow along on these pages (which are not interactive).
+
+- [Basics of text reuse for digital legal history](01-exploration.nb.html)
+- [Exploring borrowings in the Field Codes](02-exploration.nb.html)
+
+## Additional materials
+
+You may find our [working paper](http://lmullen.github.io/civil-procedure-codes/talks/dh-working-group/Funk-Mullen.Migration-Field-Code.working-paper.pdf) (PDF) or the [other materials](http://lmullen.github.io/civil-procedure-codes/) we have assembled as part of our work on the Field Code.
+
+See also [this syllabus](http://lincolnmullen.com/courses/text-analysis.2016/) on text analysis, especially the readings for the week on text reuse. Most of the techniques described in this workshop are explained in greater detail in Jure Leskovec, Anand Rajaraman, and Jeff Ullman, *Mining of Massive Datasets*, 2nd ed. (Cambridge University Press, 2014), [ch. 3](http://www.mmds.org/).

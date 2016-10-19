@@ -154,4 +154,3 @@ check_match(best_sim, 1, corpus)
 ```{r}
 spectrogram("CA1851", CA1851)
 ```
-
