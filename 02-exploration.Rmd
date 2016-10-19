@@ -3,3 +3,29 @@ title: "Exploring Borrowings in the Field Code"
 output: html_notebook
 ---
 
+```{r setup, include=FALSE}
+library(tidyverse)
+library(stringr)
+load("field-code-lsh.rda")
+source("helpers.R")
+```
+
+```{r}
+field_code_matches
+summary_matches
+```
+
+This is a list of all the codes:
+
+```{r}
+unique(field_code_matches$borrower_code)
+```
+
+
+```{r}
+spectrogram("CA1851", field_code_matches, white_list = 3)
+spectrogram("WI1856", field_code_matches, white_list = 4)
+spectrogram("UT1884", field_code_matches, white_list = 3)
+```
+
+

@@ -43,16 +43,22 @@ spectrogram <- function(code, matches_df, num_cols = 50,
                         white_list = NULL, title = NULL,
                         base_size = 12, base_family = "",
                         legend_size = 0.5) {
+
   require(dplyr)
   require(stringr)
   require(ggplot2)
 
   # Get just the genuine matches for the code of interest
+  if (all(colnames(matches_df) == c("a", "b", "school"))) {
+    matches_df <- matches_df %>%
+      ungroup() %>%
+      rename(borrower_section = a, match_section = b) %>%
+      mutate(borrower_code = get_code(borrower_section),
+             match_code = get_code(match_section))
+  }
+
   matches_df <- matches_df %>%
     ungroup() %>%
-    rename(borrower_section = a, match_section = b) %>%
-    mutate(borrower_code = get_code(borrower_section),
-           match_code = get_code(match_section)) %>%
     filter(borrower_code == code)
 
   # Create the white list of codes that we want to explicitly name in the viz.
